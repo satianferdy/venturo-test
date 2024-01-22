@@ -80,15 +80,22 @@
                                     <tr>
                                         <td class="table-secondary" colspan="14"><b>Makanan</b></td>
                                     </tr>
+                                    @php
+                                        $ca = 0;
+                                    @endphp
                                     @foreach ($datamenu as $item)
                                         @if ($item->kategori == 'makanan')
                                             <tr>
                                                 <td>{{ $item->menu }}</td>
                                                 @for ($i = 1; $i <= 12; $i++)
+                                                    @php
+                                                        $ca++;
+                                                    @endphp
                                                     @if ($result[$item->menu][$i] == 0)
                                                         <td></td>
                                                     @else
-                                                        <td style="text-align: right;">
+                                                        <td style="text-align: right;" data-bs-toggle="modal"
+                                                            data-bs-target="#detail{{ $ca }}">
                                                             {{ number_format($result[$item->menu][$i]) }}</td>
                                                     @endif
                                                 @endfor
@@ -106,10 +113,14 @@
                                             <tr>
                                                 <td>{{ $item->menu }}</td>
                                                 @for ($i = 1; $i <= 12; $i++)
+                                                    @php
+                                                        $ca++;
+                                                    @endphp
                                                     @if ($result[$item->menu][$i] == 0)
                                                         <td></td>
                                                     @else
-                                                        <td style="text-align: right;">
+                                                        <td style="text-align: right;" data-bs-toggle="modal"
+                                                            data-bs-target="#detail{{ $ca }}">
                                                             {{ number_format($result[$item->menu][$i]) }}
                                                         </td>
                                                     @endif
@@ -140,6 +151,61 @@
                                 </tfoot>
                             </table>
                         </div>
+
+                        @php
+                            $cb = 0;
+                        @endphp
+                        @foreach ($datamenu as $item)
+                            @for ($i = 1; $i <= 12; $i++)
+                                @php
+                                    $cb++;
+                                @endphp
+                                <div class="modal fade" id="detail{{ $cb }}" tabindex="-1"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">
+                                                    {{ $title[$item->menu][$i] }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>Menu : {{ $item->menu }}</p>
+                                                <p>Total Penjualan :
+                                                    {{ number_format($result[$item->menu][$i]) }}</p>
+                                                <table class="table">
+                                                    <th>
+                                                        <tr>
+                                                            <th>Tanggal Transaksi</th>
+                                                            <th>Total Transaksi</th>
+                                                        </tr>
+                                                    </th>
+                                                    <td>
+                                                        @foreach ($datatransaksi as $data)
+                                                            @php
+                                                                $ca = date('n', strtotime($data->tanggal));
+                                                            @endphp
+                                                            @if ($ca == $i && $item->menu == $data->menu)
+                                                                <tr>
+                                                                    <td>{{ $data->tanggal }}</td>
+                                                                    <td>{{ $data->total }}</td>
+                                                                </tr>
+                                                            @endif
+                                                        @endforeach
+                                                    </td>
+                                                </table>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endfor
+                        @endforeach
+
                     @endisset
                 </div>
             </div>
